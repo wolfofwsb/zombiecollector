@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>zombie list</h1>
+
+{% for zombie in zombies %}
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title">{{ zombie.name }}</span>
+      <p>Breed: {{ zombie.breed }}</p>
+      <p>Description: {{ zombie.description }}</p>
+      {% if zombie.age > 0 %}
+        <p>Age: {{ zombie.age }}</p>
+      {% else %}
+        <p>Age: baby zombie</p>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}
