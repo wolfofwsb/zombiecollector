@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse
 
-
 # Create your models here.
 MEALS = (
     ('B', 'Breakfast'),
@@ -9,18 +8,23 @@ MEALS = (
     ('D', 'Dinner')
 )
 
+class Wound(models.Model):
+    type = models.CharField(max_length=100)
+
 class Zombie(models.Model):
-	# we're defining the columns and constraints on the rows for each column
-	name = models.CharField(max_length=100)
-	breed = models.CharField(max_length=100)
-	description = models.TextField(max_length=250)
-	age = models.IntegerField()
+    # we're defining the columns and constraints on the rows for each column
+    name = models.CharField(max_length=100)
+    breed = models.CharField(max_length=100)
+    description = models.TextField(max_length=250)
+    age = models.IntegerField()
+    wounds = models.ManyToManyField(Wound)
+
+
 
 class Feeding(models.Model):
-    
-  date = models.DateField('feeding date')  
+    date = models.DateField('feeding date')  
   
-  meal = models.CharField(
+    meal = models.CharField(
     max_length=1,
     # add the 'choices' field option
     choices=MEALS,
@@ -40,3 +44,4 @@ def __str__(self):
   # Add this method
 def get_absolute_url(self):
     return reverse('detail', kwargs={'zombie_id': self.id})
+

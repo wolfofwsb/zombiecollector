@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-from .models import Zombie
+from .models import Zombie, Wound
 
 from .forms import FeedingForm
 
@@ -22,10 +22,13 @@ def zombies_index(request):
 
 def zombies_detail(request, zombie_id):
   zombie = Zombie.objects.get(id=zombie_id)
+  # Get the toys the cat doesn't have
+  wounds_zombie_doesnt_have = Wound.objects.exclude(id__in = zombie.wounds.all().values_list('id'))
   feeding_form = FeedingForm()
   return render(request, 'zombies/detail.html', {
-    # include the cat and feeding_form in the context
-    'zombie': zombie, 'feeding_form': feeding_form
+    'zombie': zombie, 'feeding_form': feeding_form,
+    # Add the toys to be displayed
+    'wounds': wounds_zombie_doesnt_have
   })
 
 def add_feeding(request, zombie_id):
@@ -38,6 +41,10 @@ def add_feeding(request, zombie_id):
     new_feeding.zombie_id = zombie_id
     new_feeding.save()
   return redirect('detail', zombie_id=zombie_id)
+
+def assoc_wound(request, zombie_id, wound_id):
+    Zombie.objects.get(id=zombie_id).wounds.add(wound_id)
+    return redirect('detail', zombie_id=zombie_id)
 
 class ZombieCreate(CreateView):
   model = Zombie
